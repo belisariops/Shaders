@@ -6,6 +6,9 @@
 #define PATTERNS_WINDOW_H
 
 #include <SDL2/SDL.h>
+#include <GL/glew.h>
+
+#include "VertexPos.h"
 
 class Window {
     static Window* window ;
@@ -17,7 +20,21 @@ public:
     SDL_Renderer* getRenderer();
     void update();
     int getScreenTicks();
+
+    void handleKeys(unsigned char key, int x, int y);
+
+    void render();
+
 private:
+    VertexPos gQuadVertices[4];
+    //Graphics program
+    GLuint gProgramID = 0;
+    GLint gVertexPos2DLocation = -1;
+    GLuint gVBO = 0;
+    GLuint gIBO = 0;
+    //Render flag
+    bool gRenderQuad = true;
+
     bool quitState;
     int SCREEN_HEIGHT;
     int SCREEN_WIDTH;
@@ -31,6 +48,13 @@ private:
     SDL_Renderer* gRenderer;
     Window(int width,int height);
     void init();
+
+    bool initGL();
+
+    void printShaderLog(GLuint shader);
+
+    void printProgramLog(GLuint id);
+
 };
 
 
