@@ -30,7 +30,7 @@ bool SetOpenGLAttributes()
 
 	// 3.2 is part of the modern versions of OpenGL, but most video cards whould be able to run it
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1 );
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
 
     // Set our OpenGL version.
     // SDL_GL_CONTEXT_CORE gives us only the newer version, deprecated functions are     disabled
@@ -56,7 +56,7 @@ void Window :: init() {
     glutInit(x,asd);
 
     //Create OpenGL 3.2 context
-    glutInitContextVersion( 3, 2 );
+    glutInitContextVersion( 3, 0 );
 
     if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
     {
@@ -151,9 +151,9 @@ Window :: ~Window() {
     SDL_Quit();
 }
 
-Window* Window ::getInstance() {
+Window* Window ::getInstance(int width, int height) {
     if (window == NULL)
-        window = new Window(640,480);
+        window = new Window(width, height);
     return window;
 }
 
@@ -190,7 +190,7 @@ bool Window::initGL() {
     //Get vertex source
     const GLchar* vertexShaderSource[] =
             {
-                    "#version 140\nin vec2 LVertexPos2D; void main() { gl_Position = vec4( LVertexPos2D.x, LVertexPos2D.y, 0, 1 ); }"
+                    "#version 130\nin vec2 LVertexPos2D; void main() { gl_Position = vec4( LVertexPos2D.x, LVertexPos2D.y, 0, 1 ); }"
             };
 
     //Set vertex source
@@ -220,7 +220,7 @@ bool Window::initGL() {
         //Get fragment source
         const GLchar* fragmentShaderSource[] =
                 {
-                        "#version 140\nout vec4 LFragment; void main() { LFragment = vec4( 1.0, 1.0, 1.0, 1.0 ); }"
+                        "#version 130\nout vec4 LFragment; void main() { LFragment = vec4( 1.0, 1.0, 1.0, 1.0 ); }"
                 };
 
         //Set fragment source

@@ -16,7 +16,7 @@ public:
     ~Window();
     bool getQuitState();
     void setQuitState(bool boolean);
-    static Window* getInstance();
+    static Window* getInstance(int width, int height);
     SDL_Renderer* getRenderer();
     void update();
     int getScreenTicks();
