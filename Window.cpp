@@ -19,7 +19,6 @@ Window :: Window(int width, int height) {
     SCREEN_TICK_PER_FRAME = 1000/SCREEN_FPS;
     quitState =false;
     init();
-    glClearColor(1,0,0,1);
     glClear(GL_COLOR_BUFFER_BIT);
     SDL_GL_SwapWindow(this->gWindow);
 }
@@ -220,7 +219,7 @@ bool Window::initGL() {
         //Get fragment source
         const GLchar* fragmentShaderSource[] =
                 {
-                        "#version 130\nout vec4 LFragment; void main() { LFragment = vec4( 1.0, 1.0, 1.0, 1.0 ); }"
+                        "#version 130\nout vec4 LFragment; void main() { LFragment = vec4( 0.0, 0.0, 0.0, 1.0 ); }"
                 };
 
         //Set fragment source
@@ -270,30 +269,6 @@ bool Window::initGL() {
                     //Initialize clear color
                     glClearColor( 0.f, 0.f, 0.f, 1.f );
 
-//                    //VBO data
-//                    GLfloat vertexData[] =
-//                            {
-//                                    -0.5f, -0.5f,
-//                                    0.5f, -0.5f,
-//                                    0.5f,  0.5f,
-//                                    -0.5f,  0.5f
-//                            };
-//
-//
-//
-//                    //IBO data
-//                    GLuint indexData[] = { 0, 1, 2, 3 };
-//
-//                    //Create VBO
-//                    glGenBuffers( 1, &gVBO );
-//                    glBindBuffer( GL_ARRAY_BUFFER, gVBO );
-//                    glBufferData( GL_ARRAY_BUFFER, 2 * 4 * sizeof(GLfloat), vertexData, GL_STATIC_DRAW );
-//
-//                    //Create IBO
-//                    glGenBuffers( 1, &gIBO );
-//                    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, gIBO );
-//                    glBufferData( GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indexData, GL_STATIC_DRAW );
-                    //Set quad verticies
                     gQuadVertices[ 0 ].x = -0.5f;
                     gQuadVertices[ 0 ].y = -0.5f;
 

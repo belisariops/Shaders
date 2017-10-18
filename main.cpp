@@ -3,7 +3,7 @@
 #include "Window.h"
 
 int main() {
-    Window* myWindow = Window :: getInstance();
+    Window* myWindow = Window :: getInstance(1280,720);
     //Enable text input
     SDL_StartTextInput();
     while (!myWindow->getQuitState()) {
