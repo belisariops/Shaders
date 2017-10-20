@@ -9,6 +9,7 @@
 #include <GL/glew.h>
 
 #include "VertexPos.h"
+#include "ShaderProgram.h"
 
 class Window {
     static Window* window ;
@@ -20,9 +21,9 @@ public:
     SDL_Renderer* getRenderer();
     void update();
     int getScreenTicks();
-
+    int loadShader();
+    int loadMedia();
     void handleKeys(unsigned char key, int x, int y);
-
     void render();
 
 private:
@@ -34,7 +35,6 @@ private:
     GLuint gIBO = 0;
     //Render flag
     bool gRenderQuad = true;
-
     bool quitState;
     int SCREEN_HEIGHT;
     int SCREEN_WIDTH;
@@ -46,15 +46,13 @@ private:
     SDL_GLContext mainContext;
     //The window renderer
     SDL_Renderer* gRenderer;
+    //ShaderProgram
+    ShaderProgram *shaderProgram;
     Window(int width,int height);
     void init();
-
     bool initGL();
-
     void printShaderLog(GLuint shader);
-
     void printProgramLog(GLuint id);
-
 };
 
 

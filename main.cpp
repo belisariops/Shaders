@@ -4,6 +4,8 @@
 
 int main() {
     Window* myWindow = Window :: getInstance(1280,720);
+    myWindow->loadShader();
+    myWindow->loadMedia();
     //Enable text input
     SDL_StartTextInput();
     while (!myWindow->getQuitState()) {
@@ -22,7 +24,7 @@ int main() {
                 myWindow->handleKeys( e.text.text[ 0 ], x, y );
             }
         }
-        //Render quad
+        //Render
         myWindow->render();
 
         //Update screen

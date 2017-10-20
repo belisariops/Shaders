@@ -3,6 +3,8 @@
 //
 
 #include "Window.h"
+#include "PearlingNoiseProgram.h"
+#include "Position.h"
 #include <iostream>
 #include <GL/freeglut.h>
 
@@ -21,6 +23,7 @@ Window :: Window(int width, int height) {
     init();
     glClear(GL_COLOR_BUFFER_BIT);
     SDL_GL_SwapWindow(this->gWindow);
+    this->shaderProgram = new PearlingNoiseProgram();
 }
 
 bool SetOpenGLAttributes()
@@ -45,7 +48,6 @@ bool SetOpenGLAttributes()
 
 void Window :: init() {
 
-    //SetOpenGLAttributes();
     //Initialize SDL
     //Initialize FreeGLUT
     int *x = (int *)malloc(sizeof(int));
@@ -113,28 +115,25 @@ void Window :: render()
     //Clear color buffer
     glClear( GL_COLOR_BUFFER_BIT );
 
-    //Render quad
-    if( gRenderQuad )
-    {
-        //Bind program
-        //glUseProgram( gProgramID );
+    //Reset transformations
+    glLoadIdentity();
 
-        //Enable vertex arrays
-        glEnableClientState( GL_VERTEX_ARRAY );
+    //Solid cyan quad in the center
+    glTranslatef( SCREEN_WIDTH / 2.f, SCREEN_HEIGHT / 2.f, 0.f );
 
-        //Set vertex data
-        glVertexPointer( 2, GL_FLOAT, 0, gQuadVertices );
+    //Enable vertex arrays
+    glEnableClientState( GL_VERTEX_ARRAY );
 
-        //Draw quad using vertex data
-        glDrawArrays( GL_QUADS, 0, 4 );
+    //Set vertex data
+    glBindBuffer( GL_ARRAY_BUFFER, gVBO );
+    glVertexPointer( 2, GL_FLOAT, 0, NULL );
 
-        //Disable vertex arrays
-        glDisableClientState( GL_VERTEX_ARRAY );
+    //Draw quad using vertex data and index data
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, gIBO );
+    glDrawElements( GL_QUADS, 4, GL_UNSIGNED_INT, NULL );
 
-
-        //Unbind program
-        //glUseProgram( NULL );
-    }
+    //Disable vertex arrays
+    glDisableClientState( GL_VERTEX_ARRAY );
 }
 
 Window :: ~Window() {
@@ -177,114 +176,45 @@ int Window ::getScreenTicks() {
 }
 
 bool Window::initGL() {
-    //Success flag
-    bool success = true;
-
-    //Generate program
-    gProgramID = glCreateProgram();
-
-    //Create vertex shader
-    GLuint vertexShader = glCreateShader( GL_VERTEX_SHADER );
-
-    //Get vertex source
-    const GLchar* vertexShaderSource[] =
-            {
-                    "#version 130\nin vec2 LVertexPos2D; void main() { gl_Position = vec4( LVertexPos2D.x, LVertexPos2D.y, 0, 1 ); }"
-            };
-
-    //Set vertex source
-    glShaderSource( vertexShader, 1, vertexShaderSource, NULL );
-
-    //Compile vertex source
-    glCompileShader( vertexShader );
-
-    //Check vertex shader for errors
-    GLint vShaderCompiled = GL_FALSE;
-    glGetShaderiv( vertexShader, GL_COMPILE_STATUS, &vShaderCompiled );
-    if( vShaderCompiled != GL_TRUE )
+    //Initialize GLEW
+    GLenum glewError = glewInit();
+    if( glewError != GLEW_OK )
     {
-        printf( "Unable to compile vertex shader %d!\n", vertexShader );
-        printShaderLog( vertexShader );
-        success = false;
+        printf( "Error initializing GLEW! %s\n", glewGetErrorString( glewError ) );
+        return false;
     }
-    else
+
+    //Make sure OpenGL 3.0 is supported
+    if( !GLEW_VERSION_3_0 )
     {
-        //Attach vertex shader to program
-        glAttachShader( gProgramID, vertexShader );
-
-
-        //Create fragment shader
-        GLuint fragmentShader = glCreateShader( GL_FRAGMENT_SHADER );
-
-        //Get fragment source
-        const GLchar* fragmentShaderSource[] =
-                {
-                        "#version 130\nout vec4 LFragment; void main() { LFragment = vec4( 0.0, 0.0, 0.0, 1.0 ); }"
-                };
-
-        //Set fragment source
-        glShaderSource( fragmentShader, 1, fragmentShaderSource, NULL );
-
-        //Compile fragment source
-        glCompileShader( fragmentShader );
-
-        //Check fragment shader for errors
-        GLint fShaderCompiled = GL_FALSE;
-        glGetShaderiv( fragmentShader, GL_COMPILE_STATUS, &fShaderCompiled );
-        if( fShaderCompiled != GL_TRUE )
-        {
-            printf( "Unable to compile fragment shader %d!\n", fragmentShader );
-            printShaderLog( fragmentShader );
-            success = false;
-        }
-        else
-        {
-            //Attach fragment shader to program
-            glAttachShader( gProgramID, fragmentShader );
-
-
-            //Link program
-            glLinkProgram( gProgramID );
-
-            //Check for errors
-            GLint programSuccess = GL_TRUE;
-            glGetProgramiv( gProgramID, GL_LINK_STATUS, &programSuccess );
-            if( programSuccess != GL_TRUE )
-            {
-                printf( "Error linking program %d!\n", gProgramID );
-                printProgramLog( gProgramID );
-                success = false;
-            }
-            else
-            {
-                //Get vertex attribute location
-                gVertexPos2DLocation = glGetAttribLocation( gProgramID, "LVertexPos2D" );
-                if( gVertexPos2DLocation == -1 )
-                {
-                    printf( "LVertexPos2D is not a valid glsl program variable!\n" );
-                    success = false;
-                }
-                else
-                {
-                    //Initialize clear color
-                    glClearColor( 0.f, 0.f, 0.f, 1.f );
-
-                    gQuadVertices[ 0 ].x = -0.5f;
-                    gQuadVertices[ 0 ].y = -0.5f;
-
-                    gQuadVertices[ 1 ].x = 0.5f;
-                    gQuadVertices[ 1 ].y = -0.5f;
-
-                    gQuadVertices[ 2 ].x = 0.5f;
-                    gQuadVertices[ 2 ].y = 0.5f;
-
-                    gQuadVertices[ 3 ].x = -0.5f;
-                    gQuadVertices[ 3 ].y = 0.5f;
-                }
-            }
-        }
+        printf( "OpenGL 3.0 not supported!\n" );
+        return false;
     }
-    return success  ;
+
+    //Set the viewport
+    glViewport( 0.f, 0.f, SCREEN_WIDTH, SCREEN_HEIGHT );
+
+    //Initialize Projection Matrix
+    glMatrixMode( GL_PROJECTION );
+    glLoadIdentity();
+    glOrtho( 0.0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0, 1.0, -1.0 );
+
+    //Initialize Modelview Matrix
+    glMatrixMode( GL_MODELVIEW );
+    glLoadIdentity();
+
+    //Initialize clear color
+    glClearColor( 0.f, 0.f, 0.f, 1.f );
+
+    //Enable texturing
+    glEnable( GL_TEXTURE_2D );
+
+    //Set blending
+    glEnable( GL_BLEND );
+    glDisable( GL_DEPTH_TEST );
+    glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
+
+    return true;
 }
 
 void Window::printShaderLog(GLuint shader) {
@@ -358,4 +288,56 @@ void Window :: handleKeys( unsigned char key, int x, int y )
     {
         gRenderQuad = !gRenderQuad;
     }
+}
+
+
+
+int Window::loadShader() {
+    //Load basic shader program
+    if( this->shaderProgram->loadProgram() )
+    {
+        printf( "Unable to load basic shader!\n" );
+        return 1;
+    }
+
+    //Bind basic shader program
+    this->shaderProgram->bind();
+    return 0;
+}
+
+int Window::loadMedia() {
+    //VBO data
+    Position quadVertices[ 4 ];
+    GLuint indices[ 4 ];
+
+    //Set quad vertices
+    quadVertices[ 0 ].x = -50.f;
+    quadVertices[ 0 ].y = -50.f;
+
+    quadVertices[ 1 ].x =  50.f;
+    quadVertices[ 1 ].y = -50.f;
+
+    quadVertices[ 2 ].x =  50.f;
+    quadVertices[ 2 ].y =  50.f;
+
+    quadVertices[ 3 ].x = -50.f;
+    quadVertices[ 3 ].y =  50.f;
+
+    //Set rendering indices
+    indices[ 0 ] = 0;
+    indices[ 1 ] = 1;
+    indices[ 2 ] = 2;
+    indices[ 3 ] = 3;
+
+    //Create VBO
+    glGenBuffers( 1, &gVBO );
+    glBindBuffer( GL_ARRAY_BUFFER, gVBO );
+    glBufferData( GL_ARRAY_BUFFER, 4 * sizeof(Position), quadVertices, GL_STATIC_DRAW );
+
+    //Create IBO
+    glGenBuffers( 1, &gIBO );
+    glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, gIBO );
+    glBufferData( GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indices, GL_STATIC_DRAW );
+
+    return 0;
 }

@@ -5,35 +5,17 @@
 #include "PearlingNoiseProgram.h"
 
 int PearlingNoiseProgram::loadProgram() {
-
-    //Success flag
-    GLint programSuccess = GL_TRUE;
-
     //Generate program
     mProgramID = glCreateProgram();
 
-    //Create vertex shader
-    GLuint vertexShader = glCreateShader( GL_VERTEX_SHADER );
+    //Load vertex shader
+    GLuint vertexShader = loadShaderFromFile( "LPlainPolygonProgram2D.glvs", GL_VERTEX_SHADER );
 
-    //Get vertex source
-    const GLchar* vertexShaderSource[] =
-            {
-                    "void main() { gl_Position = gl_Vertex; }"
-            };
-
-    //Set vertex source
-    glShaderSource( vertexShader, 1, vertexShaderSource, NULL );
-
-    //Compile vertex source
-    glCompileShader( vertexShader );
-
-    //Check vertex shader for errors
-    GLint vShaderCompiled = GL_FALSE;
-    glGetShaderiv( vertexShader, GL_COMPILE_STATUS, &vShaderCompiled );
-    if( vShaderCompiled != GL_TRUE )
+    //Check for errors
+    if( vertexShader == 0 )
     {
-        printf( "Unable to compile vertex shader %d!\n", vertexShader );
-        printShaderLog( vertexShader );
+        glDeleteProgram( mProgramID );
+        mProgramID = 0;
         return 1;
     }
 
@@ -42,45 +24,40 @@ int PearlingNoiseProgram::loadProgram() {
 
 
     //Create fragment shader
-    GLuint fragmentShader = glCreateShader( GL_FRAGMENT_SHADER );
+    GLuint fragmentShader = loadShaderFromFile( "LPlainPolygonProgram2D.glfs", GL_FRAGMENT_SHADER );
 
-    //Get fragment source
-    const GLchar* fragmentShaderSource[] =
-            {
-                    "void main() { gl_FragColor = vec4( 1.0, 0.0, 0.0, 1.0 ); }"
-            };
-
-    //Set fragment source
-    glShaderSource( fragmentShader, 1, fragmentShaderSource, NULL );
-
-    //Compile fragment source
-    glCompileShader( fragmentShader );
-
-    //Check fragment shader for errors
-    GLint fShaderCompiled = GL_FALSE;
-    glGetShaderiv( fragmentShader, GL_COMPILE_STATUS, &fShaderCompiled );
-    if( fShaderCompiled != GL_TRUE )
+    //Check for errors
+    if( fragmentShader == 0 )
     {
-        printf( "Unable to compile fragment shader %d!\n", fragmentShader );
-        printShaderLog( fragmentShader );
+        glDeleteShader( vertexShader );
+        glDeleteProgram( mProgramID );
+        mProgramID = 0;
         return 1;
     }
 
     //Attach fragment shader to program
     glAttachShader( mProgramID, fragmentShader );
 
-
     //Link program
     glLinkProgram( mProgramID );
 
     //Check for errors
+    GLint programSuccess = GL_TRUE;
     glGetProgramiv( mProgramID, GL_LINK_STATUS, &programSuccess );
     if( programSuccess != GL_TRUE )
     {
         printf( "Error linking program %d!\n", mProgramID );
         printProgramLog( mProgramID );
+        glDeleteShader( vertexShader );
+        glDeleteShader( fragmentShader );
+        glDeleteProgram( mProgramID );
+        mProgramID = 0;
         return 1;
     }
+
+    //Clean up excess shader references
+    glDeleteShader( vertexShader );
+    glDeleteShader( fragmentShader );
 
     return 0;
 }

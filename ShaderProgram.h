@@ -7,6 +7,7 @@ and may not be redistributed without written permission.*/
 
 #include "OpenGL.h"
 #include <stdio.h>
+#include <string>
 
 class ShaderProgram
 {
@@ -101,6 +102,17 @@ class ShaderProgram
         Post Condition:
          -Prints shader log
          -Reports error is GLuint ID is not a shader
+        Side Effects:
+         -None
+        */
+
+        GLuint loadShaderFromFile( std::string path, GLenum shaderType );
+        /*
+        Pre Condition:
+         -None
+        Post Condition:
+         -Returns the ID of a compiled shader of the specified type from the specified file
+         -Reports error to console if file could not be found or compiled
         Side Effects:
          -None
         */
