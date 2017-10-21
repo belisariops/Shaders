@@ -9,7 +9,7 @@ int PearlingNoiseProgram::loadProgram() {
     mProgramID = glCreateProgram();
 
     //Load vertex shader
-    GLuint vertexShader = loadShaderFromFile( "LPlainPolygonProgram2D.glvs", GL_VERTEX_SHADER );
+    GLuint vertexShader = loadShaderFromFile( "LPlainPolygonProgram2D.vert", GL_VERTEX_SHADER );
 
     //Check for errors
     if( vertexShader == 0 )
@@ -24,7 +24,7 @@ int PearlingNoiseProgram::loadProgram() {
 
 
     //Create fragment shader
-    GLuint fragmentShader = loadShaderFromFile( "LPlainPolygonProgram2D.glfs", GL_FRAGMENT_SHADER );
+    GLuint fragmentShader = loadShaderFromFile( "LPlainPolygonProgram2D.frag", GL_FRAGMENT_SHADER );
 
     //Check for errors
     if( fragmentShader == 0 )

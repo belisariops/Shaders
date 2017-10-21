@@ -130,7 +130,9 @@ void Window :: render()
 
     //Draw quad using vertex data and index data
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, gIBO );
-    glDrawElements( GL_QUADS, 4, GL_UNSIGNED_INT, NULL );
+    glDrawElements( GL_QUADS,4*((SCREEN_HEIGHT+4)/4)*((SCREEN_WIDTH+4)/4), GL_UNSIGNED_INT, NULL );
+
+    //glBindAttribLocation
 
     //Disable vertex arrays
     glDisableClientState( GL_VERTEX_ARRAY );
@@ -306,38 +308,100 @@ int Window::loadShader() {
 }
 
 int Window::loadMedia() {
+    int numberOfVertices = 4*((SCREEN_HEIGHT+4)/4)*((SCREEN_WIDTH+4)/4);
     //VBO data
-    Position quadVertices[ 4 ];
-    GLuint indices[ 4 ];
+    Position quadVertices[ numberOfVertices ];
+    GLuint indices[ numberOfVertices ];
 
-    //Set quad vertices
-    quadVertices[ 0 ].x = -50.f;
-    quadVertices[ 0 ].y = -50.f;
 
-    quadVertices[ 1 ].x =  50.f;
-    quadVertices[ 1 ].y = -50.f;
+    Position initialPosition;
+    initialPosition.x = -1.0f;
+    initialPosition.y = -1.0f;
 
-    quadVertices[ 2 ].x =  50.f;
-    quadVertices[ 2 ].y =  50.f;
+    GLuint xValue = 0, yValue = 0;
+    float difX = 8.0f/(SCREEN_WIDTH);
+    float difY = 8.0f/(SCREEN_HEIGHT);
 
-    quadVertices[ 3 ].x = -50.f;
-    quadVertices[ 3 ].y =  50.f;
+    int x = SCREEN_WIDTH/4;
+    int y = SCREEN_HEIGHT/4;
 
-    //Set rendering indices
-    indices[ 0 ] = 0;
-    indices[ 1 ] = 1;
-    indices[ 2 ] = 2;
-    indices[ 3 ] = 3;
+    GLuint index = 0;
+    for (int i = 0; i <= y; ++i) {
+        for (int j = 0; j <= x; ++j) {
+            quadVertices[index+0].x = initialPosition.x + j*difX;
+            quadVertices[index+0].y = initialPosition.y + i*difY;
+            quadVertices[index+1].x = initialPosition.x + (j+1)*difX ;
+            quadVertices[index+1].y = initialPosition.y + i*difY;
+            quadVertices[index+2].x = initialPosition.x + (j+1)*difX;
+            quadVertices[index+2].y = initialPosition.y + (i+1)*difY;
+            quadVertices[index+3].x = initialPosition.x + j*difX;
+            quadVertices[index+3].y = initialPosition.y + (i+1)*difY;
+
+            indices[index+0] = index+0;
+            indices[index+1] = index+1;
+            indices[index+2] = index+2;
+            indices[index+3] = index+3;
+            index +=4;
+
+        }
+
+    }
+
+
+//    std::cout << quadVertices[1200].x  << std::endl;
+//    std::cout << quadVertices[1200].y  << std::endl;
+//    std::cout << quadVertices[1201].x  << std::endl;
+//    std::cout << quadVertices[1201].y  << std::endl;
+//    std::cout << quadVertices[1202].x  << std::endl;
+//    std::cout << quadVertices[1202].y  << std::endl;
+//    std::cout << quadVertices[1203].x  << std::endl;
+//    std::cout << quadVertices[1203].y  << std::endl;
+
+//    //Set quad vertices
+//    quadVertices[ 0 ].x = -1.0f;
+//    quadVertices[ 0 ].y = -1.0f;
+//
+//    quadVertices[ 1 ].x =  0.0f;
+//    quadVertices[ 1 ].y = -1.0f;
+//
+//    quadVertices[ 2 ].x =  0.0f;
+//    quadVertices[ 2 ].y =  0.0f;
+//
+//    quadVertices[ 3 ].x = -1.0f;
+//    quadVertices[ 3 ].y =  0.0f;
+//
+//    //Set quad vertices
+//    quadVertices[ 4 ].x = 0.0f;
+//    quadVertices[ 4 ].y = 0.0f;
+//
+//    quadVertices[ 5 ].x =  1.0f;
+//    quadVertices[ 5 ].y = 0.0f;
+//
+//    quadVertices[ 6 ].x =  1.0f;
+//    quadVertices[ 6 ].y =  1.0f;
+//
+//    quadVertices[ 7 ].x = 0.0f;
+//    quadVertices[ 7 ].y =  1.0f;
+//
+//    //Set rendering indices
+//    indices[ 0 ] = 0;
+//    indices[ 1 ] = 1;
+//    indices[ 2 ] = 2;
+//    indices[ 3 ] = 3;
+//    indices[ 4 ] = 4;
+//    indices[ 5 ] = 5;
+//    indices[ 6 ] = 6;
+//    indices[ 7 ] = 7;
 
     //Create VBO
     glGenBuffers( 1, &gVBO );
     glBindBuffer( GL_ARRAY_BUFFER, gVBO );
-    glBufferData( GL_ARRAY_BUFFER, 4 * sizeof(Position), quadVertices, GL_STATIC_DRAW );
+    glBufferData( GL_ARRAY_BUFFER, numberOfVertices * sizeof(Position), quadVertices, GL_STATIC_DRAW );
 
     //Create IBO
     glGenBuffers( 1, &gIBO );
     glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, gIBO );
-    glBufferData( GL_ELEMENT_ARRAY_BUFFER, 4 * sizeof(GLuint), indices, GL_STATIC_DRAW );
+    glBufferData( GL_ELEMENT_ARRAY_BUFFER, numberOfVertices * sizeof(GLuint), indices, GL_STATIC_DRAW );
 
     return 0;
 }

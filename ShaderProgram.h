@@ -117,6 +117,7 @@ class ShaderProgram
          -None
         */
 
+
 		//Program ID
 		GLuint mProgramID;
 };
