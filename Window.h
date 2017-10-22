@@ -10,6 +10,7 @@
 
 #include "VertexPos.h"
 #include "ShaderProgram.h"
+#include "ClassicPerlinNoiseProgram.h"
 
 class Window {
     static Window* window ;
@@ -27,14 +28,8 @@ public:
     void render();
 
 private:
-    VertexPos gQuadVertices[4];
-    //Graphics program
-    GLuint gProgramID = 0;
-    GLint gVertexPos2DLocation = -1;
     GLuint gVBO = 0;
-    GLuint gVBO2 = 0;
     GLuint gIBO = 0;
-    GLuint gIBO2 = 0;
     //Render flag
     bool gRenderQuad = true;
     bool quitState;
@@ -49,7 +44,7 @@ private:
     //The window renderer
     SDL_Renderer* gRenderer;
     //ShaderProgram
-    ShaderProgram *shaderProgram;
+    ClassicPerlinNoiseProgram *shaderProgram;
     Window(int width,int height);
     void init();
     bool initGL();
