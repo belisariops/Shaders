@@ -46,7 +46,7 @@ void main (void)
    fragColor = multiColor;
 
    //Resolution of the noise
-   float scaleValue = 4.0;
+   vec2 scaleValue = vec2(2,1.2);
 
    //Scale position of the fragment
    vec2 scalePosition = vec2(gl_FragCoord.xy*scaleValue);

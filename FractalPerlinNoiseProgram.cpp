@@ -1,15 +1,15 @@
 //
-// Created by belisariops on 10/18/17.
+// Created by belisariops on 10/31/17.
 //
 
-#include "ClassicPerlinNoiseProgram.h"
+#include "FractalPerlinNoiseProgram.h"
 
-int ClassicPerlinNoiseProgram::loadProgram() {
+int FractalPerlinNoiseProgram::loadProgram() {
     //Generate program
     mProgramID = glCreateProgram();
 
     //Load vertex shader
-    GLuint vertexShader = loadShaderFromFile( "ClassicPerlinNoise.vert", GL_VERTEX_SHADER );
+    GLuint vertexShader = loadShaderFromFile( "FractalPerlinNoise.vert", GL_VERTEX_SHADER );
 
     //Check for errors
     if( vertexShader == 0 )
@@ -24,7 +24,7 @@ int ClassicPerlinNoiseProgram::loadProgram() {
 
 
     //Create fragment shader
-    GLuint fragmentShader = loadShaderFromFile( "ClassicPerlinNoise.frag", GL_FRAGMENT_SHADER );
+    GLuint fragmentShader = loadShaderFromFile( "FractalPerlinNoise.frag", GL_FRAGMENT_SHADER );
 
     //Check for errors
     if( fragmentShader == 0 )
@@ -74,30 +74,26 @@ int ClassicPerlinNoiseProgram::loadProgram() {
     return 0;
 }
 
-void ClassicPerlinNoiseProgram::setVertexPointer(GLsizei stride, const GLvoid* data ) {
+void FractalPerlinNoiseProgram::setVertexPointer(GLsizei stride, const GLvoid* data ) {
     glVertexAttribPointer(mVertexPos2DLocation,2,GL_FLOAT,GL_FALSE,stride,data);
 }
 
-void ClassicPerlinNoiseProgram::setTimePointer(GLsizei stride, const GLvoid *data) {
+void FractalPerlinNoiseProgram::setTimePointer(GLsizei stride, const GLvoid *data) {
     glVertexAttribPointer( mMultiColorLocation, 4, GL_FLOAT, GL_FALSE, stride, data );
 }
 
-void ClassicPerlinNoiseProgram::enableVertexPointer() {
+void FractalPerlinNoiseProgram::enableVertexPointer() {
     glEnableVertexAttribArray( mVertexPos2DLocation );
 }
 
-void ClassicPerlinNoiseProgram::disableVertexPointer() {
+void FractalPerlinNoiseProgram::disableVertexPointer() {
     glDisableVertexAttribArray( mVertexPos2DLocation );
 }
 
-void ClassicPerlinNoiseProgram::enableColorPointer() {
+void FractalPerlinNoiseProgram::enableColorPointer() {
     glEnableVertexAttribArray( mMultiColorLocation );
 }
 
-void ClassicPerlinNoiseProgram::disableColorPointer() {
+void FractalPerlinNoiseProgram::disableColorPointer() {
     glDisableVertexAttribArray( mMultiColorLocation );
 }
-
-
-
-

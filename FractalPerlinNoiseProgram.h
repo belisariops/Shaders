@@ -1,14 +1,14 @@
 //
-// Created by belisariops on 10/18/17.
+// Created by belisariops on 10/31/17.
 //
 
-#ifndef SHADERS_PEARLINGNOISEPROGRAM_H
-#define SHADERS_PEARLINGNOISEPROGRAM_H
+#ifndef SHADERS_FRACTALPERLINNOISE_H
+#define SHADERS_FRACTALPERLINNOISE_H
 
 
 #include "ShaderProgram.h"
 
-class ClassicPerlinNoiseProgram : public ShaderProgram {
+class FractalPerlinNoiseProgram : public ShaderProgram  {
 
     //Attribute locations
     GLuint mVertexPos2DLocation;
@@ -31,4 +31,4 @@ public:
 };
 
 
-#endif //SHADERS_PEARLINGNOISEPROGRAM_H
+#endif //SHADERS_FRACTALPERLINNOISE_H

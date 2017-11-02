@@ -24,7 +24,7 @@ Window :: Window(int width, int height) {
     init();
     glClear(GL_COLOR_BUFFER_BIT);
     SDL_GL_SwapWindow(this->gWindow);
-    this->shaderProgram = new ClassicPerlinNoiseProgram();
+    this->shaderProgram = new FractalPerlinNoiseProgram();
 }
 
 bool SetOpenGLAttributes()

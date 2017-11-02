@@ -25,7 +25,7 @@ float noise(vec3 x) {
 float fnoise(vec3 p) {
   // random rotation reduces artifacts
   p = mat3(0.28862355854826727, 0.6997227302779844, 0.6535170557707412,
-           0.06997493955670424, 0.6653237235314099, -0.7432683571499161,
+           0.06997493955670424, 0.353237235314099, -0.7432683571499161,
            -0.9548821651308448, 0.26025457467376617, 0.14306504491456504)*p;
   return dot(vec4(noise(p), noise(p*2.), noise(p*4.), noise(p*8.)),
              vec4(0.5, 0.25, 0.125, 0.06));
@@ -33,6 +33,7 @@ float fnoise(vec3 p) {
 
 void main (void)
 {
+    //Normalize fragment coordinate
 	vec2 uv = gl_FragCoord.xy/vec2(1280,720);
     vec3 p = vec3(uv*16., 0.);
     float result = fnoise(p);

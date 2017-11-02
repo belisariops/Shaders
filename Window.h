@@ -11,6 +11,7 @@
 #include "VertexPos.h"
 #include "ShaderProgram.h"
 #include "ClassicPerlinNoiseProgram.h"
+#include "FractalPerlinNoiseProgram.h"
 
 class Window {
     static Window* window ;
@@ -44,7 +45,7 @@ private:
     //The window renderer
     SDL_Renderer* gRenderer;
     //ShaderProgram
-    ClassicPerlinNoiseProgram *shaderProgram;
+    FractalPerlinNoiseProgram *shaderProgram;
     Window(int width,int height);
     void init();
     bool initGL();
